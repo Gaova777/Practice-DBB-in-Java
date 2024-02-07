@@ -28,11 +28,12 @@ public class Main {
             System.out.println("\n");
 
             Employee employee = new Employee();
+            employee.setId(4);
             employee.setFirst_name("Juan");
             employee.setPa_surname("Gutierrez");
-            employee.setMa_surname("Alvarez");
-            employee.setEmail("juan@gu_gmail.om");
-            employee.setSalary(10000F);
+            employee.setMa_surname("Gutierrez");
+            employee.setEmail("Gutierrez@gu_gmail.om");
+            employee.setSalary(50000F);
             repository.save(employee);
 
             System.out.println("\n---agregando empleado Juan-----");
