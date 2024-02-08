@@ -27,16 +27,10 @@ public class Main {
             repository.findAll().forEach(System.out::println);
             System.out.println("\n");
 
-            Employee employee = new Employee();
-            employee.setId(4);
-            employee.setFirst_name("Juan");
-            employee.setPa_surname("Gutierrez");
-            employee.setMa_surname("Gutierrez");
-            employee.setEmail("Gutierrez@gu_gmail.om");
-            employee.setSalary(50000F);
-            repository.save(employee);
+            System.out.println("----Eliminando empleado---");
+            repository.delete(6);
 
-            System.out.println("\n---agregando empleado Juan-----");
+            System.out.println("\n---listando again empleado -----");
             repository.findAll().forEach(System.out::println);
             //
 //            System.out.println(repository.getById(1));
