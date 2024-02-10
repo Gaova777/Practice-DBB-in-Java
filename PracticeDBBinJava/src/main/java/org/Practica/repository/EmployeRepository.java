@@ -8,13 +8,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeRepository implements Repository<Employee> {
-    private Connection getConnection() throws SQLException {
-        return DatabaseConnection.getInstance();
+
+
+    //    private Connection getConnection() throws SQLException {
+//        return DatabaseConnection.getInstance();
+//    }
+    private Connection myConn;
+
+    public EmployeRepository(Connection myConn) {
+        this.myConn = myConn;
     }
+
     @Override
     public List<Employee> findAll() throws SQLException {
         List<Employee> employees = new ArrayList<>();
-        try(Statement myStatement = getConnection().createStatement();
+        try(Statement myStatement = myConn.createStatement();
             ResultSet myRes = myStatement.executeQuery("SELECT * FROM employees")){
             while(myRes.next()){
                 Employee e = createEmployee(myRes);
@@ -29,7 +37,7 @@ public class EmployeRepository implements Repository<Employee> {
     @Override
     public Employee getById(Integer id) throws SQLException {
         Employee employee = null;
-        try(PreparedStatement myStatement = getConnection().prepareStatement("SELECT * FROM employees WHERE id = ?")){
+        try(PreparedStatement myStatement = myConn.prepareStatement("SELECT * FROM employees WHERE id = ?")){
             myStatement.setInt(1,id);
             try(ResultSet myRes = myStatement.executeQuery()) {
                 if(myRes.next()){
@@ -44,20 +52,21 @@ public class EmployeRepository implements Repository<Employee> {
     public void save(Employee employee) throws SQLException {
         String sql;
         if(employee.getId()!=null && employee.getId()>0){
-            sql = "UPDATE employees SET first_name = ?, pa_surname=?,ma_surname=?, email=?, salary=? WHERE id =?";
+            sql = "UPDATE employees SET first_name = ?, pa_surname=?,ma_surname=?, email=?, salary=?, curp=? WHERE id =?";
         }else{
-            sql = "INSERT INTO employees (first_name, pa_surname,ma_surname,email,salary) VALUES(?,?,?,?,?)";
+            sql = "INSERT INTO employees (first_name, pa_surname,ma_surname,email,salary, curp) VALUES(?,?,?,?,?,?)";
         }
 
 
-        try(PreparedStatement myStatement = getConnection().prepareStatement(sql)){
+        try(PreparedStatement myStatement = myConn.prepareStatement(sql)){
             myStatement.setString(1,employee.getFirst_name());
             myStatement.setString(2,employee.getPa_surname());
             myStatement.setString(3,employee.getMa_surname());
             myStatement.setString(4,employee.getEmail());
             myStatement.setFloat(5,employee.getSalary());
+            myStatement.setString(6,employee.getCurp());
            if(employee.getId()!=null && employee.getId()>0){
-               myStatement.setInt(6,employee.getId());
+               myStatement.setInt(7,employee.getId());
            }
             myStatement.executeUpdate();
         }catch (SQLException e){
@@ -67,7 +76,7 @@ public class EmployeRepository implements Repository<Employee> {
 
     @Override
     public void delete(Integer id) throws SQLException {
-        try(PreparedStatement myStatement = getConnection().prepareStatement("DELETE FROM employees WHERE id =?")){
+        try(PreparedStatement myStatement = myConn.prepareStatement("DELETE FROM employees WHERE id =?")){
             myStatement.setInt(1,id);
             myStatement.executeUpdate();
         }
@@ -81,6 +90,7 @@ public class EmployeRepository implements Repository<Employee> {
         e.setMa_surname(myRes.getString("ma_surname"));
         e.setEmail(myRes.getString("email"));
         e.setSalary(myRes.getFloat("salary"));
+        e.setCurp(myRes.getString("curp"));
        return e;
     }
 }
