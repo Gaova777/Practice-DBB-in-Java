@@ -12,31 +12,16 @@ import java.sql.*;
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) throws SQLException {
-//        SwingApp app = new SwingApp();
-//        app.setVisible(true);
-        try (Connection myConn = DatabaseConnection.getInstance()) {
-            if (myConn.getAutoCommit()) {
-                myConn.setAutoCommit(false);
-            }
+        System.out.println("---ListandoTodos----");
+        Repository<Employee> repository = new EmployeRepository();
 
-        try {
-            Repository<Employee> repository = new EmployeRepository(myConn);
+        repository.findAll().forEach(System.out::println);
 
-            System.out.println("-----Insertart un nuevo Empleado-----");
-            Employee  employee = new Employee();
-            employee.setFirst_name("America");
-            employee.setPa_surname("Garcia");
-            employee.setMa_surname("Garcia");
-            employee.setEmail("am@m.com");
-            employee.setSalary(3999F);
-            employee.setCurp("AMEC234Y91JOLPSDET");
-            repository.save(employee);
-            myConn.commit();
-        } catch (SQLException e) {
-            myConn.rollback();//se regresa al ultimo estado de la base de datos en caso de problemas una buen excepcion
-            throw new RuntimeException(e);
-        }
-        }
+        System.out.println("---Busqueda por id---");
+
+        System.out.println(repository.getById(2));
+
+
 
     }
 }
